@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: song-service
+
+  data:
+    mongodb:
+      uri: mongodb+srv://rishav2020:rishav2025@cluster123.yp2bwzn.mongodb.net/songplaylist?retryWrites=true&w=majority&appName=Cluster123
+      database: songplaylist
+
+  security:
+    user:
+      name: admin
+      password: admin
+
+server:
+  port: 8082
+
+jwt:
+  secret: mySecretKeyForJWTTokenGenerationAndValidation12345
+
+logging:
+  level:
+    com.example.song: DEBUG
+    org.springframework.security: DEBUG

@@ -1,0 +1,25 @@
+# Maven build outputs
+**/target/
+**/*.class
+**/*.jar
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Log files
+**/*.log
+**/logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Generated files
+**/generated-sources/
+
+# Data exports
+**/music_data_export_*.json

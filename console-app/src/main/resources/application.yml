@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: console-app
+  main:
+    web-application-type: none
+
+services:
+  user:
+    url: http://localhost:8081/api/users
+  song:
+    url: http://localhost:8082/api/songs
+  playlist:
+    url: http://localhost:8083/api/playlists
+
+logging:
+  level:
+    com.example.console: INFO
