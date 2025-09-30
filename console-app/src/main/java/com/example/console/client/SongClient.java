@@ -37,7 +37,7 @@ public class SongClient {
             ResponseEntity<String> response = restTemplate.postForEntity(songServiceUrl, entity, String.class);
             return response.getBody();
         } catch (HttpClientErrorException e) {
-            return "{\"error\": \"" + e.getResponseBodyAsString() + "\"}";
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
             return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
@@ -47,8 +47,10 @@ public class SongClient {
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(songServiceUrl, String.class);
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -56,8 +58,10 @@ public class SongClient {
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(songServiceUrl + "/" + id, String.class);
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -66,8 +70,10 @@ public class SongClient {
             String url = songServiceUrl + "/search?" + searchType + "=" + searchValue;
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -85,8 +91,10 @@ public class SongClient {
                     String.class
             );
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -112,8 +120,10 @@ public class SongClient {
                     String.class
             );
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -131,8 +141,23 @@ public class SongClient {
                     String.class
             );
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
+    }
+
+    private String cleanErrorMessage(String errorResponse) {
+        if (errorResponse == null) {
+            return "Unknown error";
+        }
+        // Remove extra quotes and 400 status prefixes
+        return errorResponse
+                .replaceAll("400 : \"", "")
+                .replaceAll("\"$", "")
+                .replaceAll("^\"", "")
+                .replaceAll("\\\\\"", "\"")
+                .trim();
     }
 }

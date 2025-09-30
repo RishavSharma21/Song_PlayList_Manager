@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -32,8 +33,10 @@ public class PlaylistClient {
 
             ResponseEntity<String> response = restTemplate.postForEntity(playlistServiceUrl, entity, String.class);
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -41,8 +44,10 @@ public class PlaylistClient {
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(playlistServiceUrl, String.class);
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -60,8 +65,10 @@ public class PlaylistClient {
                     String.class
             );
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -69,8 +76,10 @@ public class PlaylistClient {
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(playlistServiceUrl + "/" + id, String.class);
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -81,8 +90,10 @@ public class PlaylistClient {
                     String.class
             );
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -99,8 +110,10 @@ public class PlaylistClient {
                     String.class
             );
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -118,8 +131,12 @@ public class PlaylistClient {
                     String.class
             );
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            // Extract the actual error message from the response
+            String errorMessage = cleanErrorMessage(e.getResponseBodyAsString());
+            return "{\"error\": \"" + errorMessage + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -142,8 +159,10 @@ public class PlaylistClient {
                     String.class
             );
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -161,8 +180,10 @@ public class PlaylistClient {
                     String.class
             );
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
 
@@ -173,8 +194,24 @@ public class PlaylistClient {
                     String.class
             );
             return response.getBody();
+        } catch (HttpClientErrorException e) {
+            return "{\"error\": \"" + cleanErrorMessage(e.getResponseBodyAsString()) + "\"}";
         } catch (Exception e) {
-            return "{\"error\": \"" + e.getMessage() + "\"}";
+            return "{\"error\": \"Connection error: " + e.getMessage() + "\"}";
         }
     }
+
+    private String cleanErrorMessage(String errorResponse) {
+        if (errorResponse == null) {
+            return "Unknown error";
+        }
+        // Remove extra quotes and 400 status prefixes
+        return errorResponse
+                .replaceAll("400 : \"", "")
+                .replaceAll("\"$", "")
+                .replaceAll("^\"", "")
+                .replaceAll("\\\\\"", "\"")
+                .trim();
+    }
 }
+
